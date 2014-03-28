@@ -1,0 +1,7 @@
+{
+    "name" : "ghastly/archive",
+    "type" : "ghastly-plugin",
+    "require" : {
+        "composer/installers" : "*"
+    }
+}
