@@ -2,7 +2,8 @@
     "name" : "ghastly/archive",
     "description" : "An archive plugin for Ghastly",
     "type" : "ghastly-plugin",
+    "license" : "UNLICENSE",
     "require" : {
-        "ghastly/plugin-installer" : "*"
+        "ghastly/plugin-installer" : "dev-master"
     }
 }
