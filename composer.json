@@ -1,5 +1,6 @@
 {
     "name" : "ghastly/archive",
+    "description" : "An archive plugin for Ghastly",
     "type" : "ghastly-plugin",
     "require" : {
         "composer/installers" : "*"
