@@ -3,6 +3,6 @@
     "description" : "An archive plugin for Ghastly",
     "type" : "ghastly-plugin",
     "require" : {
-        "composer/installers" : "*"
+        "ghastly/plugin-installer" : "*"
     }
 }
