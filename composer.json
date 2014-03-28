@@ -4,6 +4,6 @@
     "type" : "ghastly-plugin",
     "license" : "UNLICENSE",
     "require" : {
-        "ghastly/plugin-installer" : "dev-master"
+        "ghastly/plugin-installer" : "@dev"
     }
 }
