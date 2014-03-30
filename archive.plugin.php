@@ -1,6 +1,6 @@
 <?php
 
-class Archive extends Plugin {
+class Archive extends \Ghastly\Plugin\Plugin {
     public $events;
     public $Ghastly;
 
