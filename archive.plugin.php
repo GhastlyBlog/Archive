@@ -7,13 +7,13 @@ class Archive extends \Ghastly\Plugin\Plugin {
     public function __construct()
     {
         $this->events = [
-            ['event'=>'Ghastly.route', 'func'=>'onGhastlyRoute'],
-            ['event'=>'Ghastly.pre_render', 'func'=>'onGhastlyPreRender']
+            ['event'=>'Ghastly.PreRoute', 'func'=>'onPreRoute'],
+            ['event'=>'Ghastly.PreRender', 'func'=>'onPreRender']
         ];
     }
 
     /** Respond to new routes **/
-    public function onGhastlyRoute(\Ghastly\GhastlyRouteEvent $event){
+    public function onPreRoute(\Ghastly\Event\PreRouteEvent $event){
         $event->router->with('/archive', function() use ($event) {
             $this->Ghastly= $event->Ghastly;
 
@@ -34,7 +34,7 @@ class Archive extends \Ghastly\Plugin\Plugin {
     }
 
     /** Add variables to all templates on all routes **/
-    public function onGhastlyPreRender(\Ghastly\GhastlyPreRenderEvent $event){
+    public function onPreRender(\Ghastly\Event\PreRenderEvent $event){
         $event->Ghastly->template_vars['archives_url'] = "archive";
     }
 
