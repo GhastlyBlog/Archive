@@ -2,7 +2,6 @@
 
 class Archive extends \Ghastly\Plugin\Plugin {
     public $events;
-    public $Ghastly;
 
     public function __construct()
     {
@@ -13,34 +12,35 @@ class Archive extends \Ghastly\Plugin\Plugin {
     }
 
     /** Respond to new routes **/
-    public function onPreRoute(\Ghastly\Event\PreRouteEvent $event){
+    public function onPreRoute(\Ghastly\Event\PreRouteEvent $event)
+    {
         $event->router->with('/archive', function() use ($event) {
-            $this->Ghastly= $event->Ghastly;
+            $posts = $event->postModel->findAllHeaders(0);
 
-            $posts = $this->Ghastly->postModel->findAllHeaders(0);
-            $this->Ghastly->template_dirs[] = "plugins/archive";
-            $this->Ghastly->template = "archive.html";
+            $event->renderer->addTemplateDir('plugins/archive');
+            $event->renderer->setTemplate('archive.html');
 
             $event->router->respond('/?', function() use ($posts, $event){
-                $this->Ghastly->template_vars['archive_links'] = $this->generateLinks($posts, date('m'), date('Y'));
-                $this->Ghastly->template_vars['posts'] = $this->getPostsForMonthYear($posts, date('m'), date('Y'));                
+                $event->renderer->setTemplateVar('archive_links', $this->generateLinks($posts, date('m'), date('Y')));
+                $event->renderer->setTemplateVar('posts', $this->getPostsForMonthYear($event->postModel, $posts, date('m'), date('Y')));                
             });
 
             $event->router->respond('/[:month]/[:year]', function($req) use ($posts, $event){
-                $this->Ghastly->template_vars['archive_links'] = $this->generateLinks($posts, $req->month, $req->year);
-                $this->Ghastly->template_vars['posts'] = $this->getPostsForMonthYear($posts, $req->month, $req->year);
+                $event->renderer->setTemplateVar('archive_links', $this->generateLinks($posts, $req->month, $req->year));
+                $event->renderer->setTemplateVar('posts', $this->getPostsForMonthYear($event->postModel, $posts, $req->month, $req->year));
             });
         });
     }
 
     /** Add variables to all templates on all routes **/
-    public function onPreRender(\Ghastly\Event\PreRenderEvent $event){
-        $event->Ghastly->template_vars['archives_url'] = "archive";
+    public function onPreRender(\Ghastly\Event\PreRenderEvent $event)
+    {
+        $event->renderer->setTemplateVar('archives_url', 'archive');
     }
 
-    public function getPostsForMonthYear($posts, $month, $year)
+    public function getPostsForMonthYear($postModel, $posts, $month, $year)
     {
-        $posts = array_filter($posts, function($post) use ($month, $year){;
+        $posts = array_filter($posts, function($post) use ($month, $year) {;
             $post_month = $post['date']->format('m');
             $post_year  = $post['date']->format('Y');
 
@@ -48,7 +48,7 @@ class Archive extends \Ghastly\Plugin\Plugin {
         });
 
         foreach($posts as $key => $post) {
-            $posts[$key] = $this->Ghastly->postModel->getPostById($post['filename']);
+            $posts[$key] = $postModel->getPostById($post['filename']);
         }
 
         return $posts;
@@ -59,8 +59,7 @@ class Archive extends \Ghastly\Plugin\Plugin {
         $month_year = $posts[0]['date']->format('Y-m');
         $counts = $links = [];
 
-        foreach($posts as $post)
-        {
+        foreach($posts as $post) {
             $post_month_year = $post['date']->format('Y-m');
 
             if($post_month_year == $month_year) {
@@ -72,8 +71,7 @@ class Archive extends \Ghastly\Plugin\Plugin {
             $month_year = $post_month_year;
         }
         
-        foreach($counts as $key => $count)
-        {
+        foreach($counts as $key => $count) {
             $date = new DateTime($key.'-01');
             $links[] = [
                 'month_name'=>$date->format('F Y'), 
