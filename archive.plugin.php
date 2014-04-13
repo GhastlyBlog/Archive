@@ -41,14 +41,14 @@ class Archive extends \Ghastly\Plugin\Plugin {
     public function getPostsForMonthYear($postModel, $posts, $month, $year)
     {
         $posts = array_filter($posts, function($post) use ($month, $year) {;
-            $post_month = $post['date']->format('m');
-            $post_year  = $post['date']->format('Y');
+            $post_month = $post->getDate()->format('m');
+            $post_year  = $post->getDate()->format('Y');
 
             return $post_month == $month && $post_year == $year;
         });
 
         foreach($posts as $key => $post) {
-            $posts[$key] = $postModel->getPostById($post['filename']);
+            $posts[$key] = $postModel->getPostById($post->getFilename());
         }
 
         return $posts;
@@ -56,11 +56,11 @@ class Archive extends \Ghastly\Plugin\Plugin {
 
     public function generateLinks($posts, $active_month=false, $active_year=false)
     {
-        $month_year = $posts[0]['date']->format('Y-m');
+        $month_year = $posts[0]->getDate()->format('Y-m');
         $counts = $links = [];
 
         foreach($posts as $post) {
-            $post_month_year = $post['date']->format('Y-m');
+            $post_month_year = $post->getDate()->format('Y-m');
 
             if($post_month_year == $month_year) {
                 $counts[$month_year] = (isset($counts[$month_year])) ? ++$counts[$month_year] : 1;
